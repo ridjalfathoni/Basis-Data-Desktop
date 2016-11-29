@@ -4,7 +4,7 @@ Imports iTextSharp.text.pdf
 Imports MySql.Data.MySqlClient
 
 Public Class Form1
-   Dim conn As New MySqlConnection
+    Dim conn As New MySqlConnection
     Public dbconn As New MySqlConnection
     Public sql As String
     Public dbcomm As MySqlCommand
@@ -60,9 +60,9 @@ Public Class Form1
         aa.Text = ""
     End Sub
 
-    
+
     Private Sub Tampil_Click(sender As Object, e As EventArgs) Handles Tampil.Click
-       ListBox1.Items.Clear()
+        ListBox1.Items.Clear()
         sql = "SELECT * FROM tb_biodata"
         Try
             dbcomm = New MySqlCommand(sql, dbconn)
@@ -83,7 +83,7 @@ Public Class Form1
 
     Private Sub cari_Click(sender As Object, e As EventArgs) Handles cari.Click
         ListBox1.Items.Clear()
-        sql = "SELECT * FROM tb_biodata where nama like '%" & c.Text & "%'"
+        sql = "SELECT * FROM tb_biodata where nis like '%" & n.Text & "%'"
         Try
             dbcomm = New MySqlCommand(sql, dbconn)
             dbread = dbcomm.ExecuteReader()
@@ -102,7 +102,7 @@ Public Class Form1
     End Sub
 
     Private Sub hapus_Click(sender As Object, e As EventArgs) Handles hapus.Click
-        sql = "delete FROM tb_biodata where nama='" & c.Text & "'"
+        sql = "DELETE FROM tb_biodata where nis='" & n.Text & "'"
         Try
             dbcomm = New MySqlCommand(sql, dbconn)
             dbread = dbcomm.ExecuteReader()
@@ -210,5 +210,39 @@ FileMode.Create)
             pdfDoc.Close()
             stream.Close()
         End Using
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim buf As String
+        Dim nama(200), nis(200), kelas(200), tempat(200), tanggal(200), alamat(200), asal(200) As String
+        Dim i, j, k, l, jmlData As Integer
+        Dim sortMatematika(200), noIndex(200), sortIndex(200) As Integer
+        Dim bawah, atas, tengah, t, b As Integer
+
+        OpenFileDialog1.ShowDialog()
+
+
+        i = 0
+        While buf.IndexOf(";") > 0
+            noIndex(i) = i
+            nis(i) = buf.Substring(0, buf.IndexOf(";"))
+            buf = buf.Remove(0, buf.IndexOf("") + 1)
+            nama(i) = buf.Substring(0, buf.IndexOf(";"))
+            buf = buf.Remove(0, buf.IndexOf("") + 1)
+            kelas(i) = buf.Substring(0, buf.IndexOf(";"))
+            buf = buf.Remove(0, buf.IndexOf("") + 1)
+            tempat(i) = buf.Substring(0, buf.IndexOf(";"))
+            buf = buf.Remove(0, buf.IndexOf("") + 1)
+            tanggal(i) = buf.Substring(0, buf.IndexOf(";"))
+            buf = buf.Remove(0, buf.IndexOf("") + 1)
+            alamat(i) = buf.Substring(0, buf.IndexOf(";"))
+            buf = buf.Remove(0, buf.IndexOf("") + 1)
+            asal(i) = buf.Substring(0, buf.IndexOf(";"))
+            buf = buf.Remove(0, buf.IndexOf(Chr(Keys.Return)) + 2)
+
+            RichTextBox1.Text = buf
+            i += 1
+        End While
+        End If
     End Sub
 End Class
