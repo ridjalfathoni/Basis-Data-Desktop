@@ -214,35 +214,55 @@ FileMode.Create)
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim buf As String
-        Dim nama(200), nis(200), kelas(200), tempat(200), tanggal(200), alamat(200), asal(200) As String
+        Dim nis(200) As String
+        Dim nama(200), kelas(200), tempat(200), tanggal(200), alamat(200), alamat_asal(200) As String
         Dim i, j, k, l, jmlData As Integer
-        Dim sortMatematika(200), noIndex(200), sortIndex(200) As Integer
-        Dim bawah, atas, tengah, t, b As Integer
 
         OpenFileDialog1.ShowDialog()
-
-
-        i = 0
-        While buf.IndexOf(";") > 0
-            noIndex(i) = i
-            nis(i) = buf.Substring(0, buf.IndexOf(";"))
-            buf = buf.Remove(0, buf.IndexOf("") + 1)
-            nama(i) = buf.Substring(0, buf.IndexOf(";"))
-            buf = buf.Remove(0, buf.IndexOf("") + 1)
-            kelas(i) = buf.Substring(0, buf.IndexOf(";"))
-            buf = buf.Remove(0, buf.IndexOf("") + 1)
-            tempat(i) = buf.Substring(0, buf.IndexOf(";"))
-            buf = buf.Remove(0, buf.IndexOf("") + 1)
-            tanggal(i) = buf.Substring(0, buf.IndexOf(";"))
-            buf = buf.Remove(0, buf.IndexOf("") + 1)
-            alamat(i) = buf.Substring(0, buf.IndexOf(";"))
-            buf = buf.Remove(0, buf.IndexOf("") + 1)
-            asal(i) = buf.Substring(0, buf.IndexOf(";"))
-            buf = buf.Remove(0, buf.IndexOf(Chr(Keys.Return)) + 2)
-
+        If OpenFileDialog1.FileName <> "" Then
+            buf = My.Computer.FileSystem.ReadAllText(OpenFileDialog1.FileName)
             RichTextBox1.Text = buf
-            i += 1
-        End While
+
+            i = 0
+            While buf.IndexOf(";") > 0
+                nis(i) = buf.Substring(0, buf.IndexOf(";"))
+                buf = buf.Remove(0, buf.IndexOf(";") + 1)
+                nama(i) = buf.Substring(0, buf.IndexOf(";"))
+                buf = buf.Remove(0, buf.IndexOf(";") + 1)
+                kelas(i) = buf.Substring(0, buf.IndexOf(";"))
+                buf = buf.Remove(0, buf.IndexOf(";") + 1)
+                tempat(i) = buf.Substring(0, buf.IndexOf(";"))
+                buf = buf.Remove(0, buf.IndexOf(";") + 1)
+                tanggal(i) = buf.Substring(0, buf.IndexOf(";"))
+                buf = buf.Remove(0, buf.IndexOf(";") + 1)
+                alamat(i) = buf.Substring(0, buf.IndexOf(";"))
+                buf = buf.Remove(0, buf.IndexOf(";") + 1)
+                alamat_asal(i) = buf.Substring(0, buf.IndexOf(Chr(Keys.Return)))
+                buf = buf.Remove(0, buf.IndexOf(Chr(Keys.Return)) + 2)
+                i += 1
+
+                'MsgBox(nis(i) + ", " + nama(i) + ", " + kelas(i))
+            End While
+
+            jmlData = i - 1
+
+            For i = 1 To jmlData
+                sql = "INSERT INTO tb_biodata(nis,nama,kelas,tempatlahir,tanggallahir,alamat,alamatasal) VALUES('" & nis(i) & "','" & nama(i) & "','" & kelas(i) & "','" & tempat(i) & "','" & tanggal(i) & "','" & alamat(i) & "','" & alamat_asal(i) & "')"
+                Try
+                    dbcomm = New MySqlCommand(sql, dbconn)
+                    dbread = dbcomm.ExecuteReader()
+                    dbread.Close()
+                Catch ex As Exception
+                    MsgBox("Error in saving to Database. Error is :" & ex.Message)
+                    dbread.Close()
+                    Exit Sub
+                End Try
+            Next
+
+            MsgBox("Pengolahaan data sudah selesai.")
+
+
+
         End If
     End Sub
 End Class
