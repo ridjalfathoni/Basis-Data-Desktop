@@ -261,8 +261,6 @@ FileMode.Create)
 
             MsgBox("Pengolahaan data sudah selesai.")
 
-
-
         End If
     End Sub
 End Class
